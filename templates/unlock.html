@@ -1,0 +1,14 @@
+{% extends "auth.html" %}{% from "_macros.html" import icon, csrf, eye_toggle with context %}
+{% block title %}Unlock vault{% endblock %}
+{% block eyebrow %}VAULT LOCKED{% endblock %}
+{% block auth_heading %}Unlock your vault{% endblock %}
+{% block auth_subtitle %}Signed in as {{ current_user.email }}. Enter your master password to decrypt your saved items.{% endblock %}
+{% block auth_form %}
+<form method="post" class="form-stack">
+  {{ csrf() }}
+  <div class="field"><label for="master">Master password</label>
+    <div class="input-group"><input id="master" type="password" name="master_password" placeholder="Your master password" required autofocus autocomplete="current-password">{{ eye_toggle('master') }}</div></div>
+  <button class="btn btn-primary full" type="submit">{{ icon('unlock', 17) }} <span class="btn-label">Unlock vault</span></button>
+</form>
+{% endblock %}
+{% block auth_bottom %}Not you? Use <b>Sign out</b> in the top-right corner.{% endblock %}

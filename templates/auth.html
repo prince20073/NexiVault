@@ -1,0 +1,15 @@
+{% from "_macros.html" import icon, brand_mark with context %}
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <a class="auth-mark" href="{{ url_for('main.index') }}" aria-label="NexiVault home">{{ brand_mark(46) }}</a>
+    <div class="eyebrow centered">{% block eyebrow %}NEXIVAULT ACCOUNT{% endblock %}</div>
+    <h1>{% block auth_heading %}{% endblock %}</h1>
+    <p class="muted centered auth-sub">{% block auth_subtitle %}{% endblock %}</p>
+    {% block auth_form %}{% endblock %}
+    <div class="auth-bottom">{% block auth_bottom %}{% endblock %}</div>
+    <p class="auth-note">{{ icon('lock', 12) }} Your master password is never stored as plain text.</p>
+  </div>
+</div>
+{% endblock %}

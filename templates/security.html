@@ -1,0 +1,70 @@
+{% extends "base.html" %}{% from "_macros.html" import icon, page_head, score_ring, empty_state with context %}
+{% block title %}Security centre{% endblock %}
+{% block content %}
+{{ page_head('PROTECTION', 'Security centre', 'Find weak, reused and missing passwords, and fix them.') }}
+
+{% if not analysis.total %}
+{% call empty_state('shield-check', 'Nothing to check yet', 'Add passwords to your vault and NexiVault will analyse them here.') %}<a class="btn btn-primary" href="{{ url_for('vault.add') }}">{{ icon('plus', 17) }} Add password</a>{% endcall %}
+{% else %}
+<section class="card score-card">
+  {{ score_ring(analysis.score, analysis.grade) }}
+  <div class="score-text">
+    <h2>{{ analysis.grade }}</h2>
+    <p class="muted">{{ analysis.healthy|length }} of {{ analysis.total }} {{ 'entry has' if analysis.total == 1 else 'entries have' }} no issues. The score is the share of your passwords that are strong, unique, present and recently changed.</p>
+  </div>
+</section>
+
+<div class="stats-grid four">
+  <div class="stat-card static"><div class="stat-top"><span class="stat-label">WEAK</span><span class="stat-icon danger">{{ icon('alert', 18) }}</span></div><div class="stat-number">{{ analysis.weak|length }}</div><small>Not yet "Strong"</small></div>
+  <div class="stat-card static"><div class="stat-top"><span class="stat-label">REUSED</span><span class="stat-icon danger">{{ icon('repeat', 18) }}</span></div><div class="stat-number">{{ analysis.reused_count }}</div><small>Shared between accounts</small></div>
+  <div class="stat-card static"><div class="stat-top"><span class="stat-label">NO PASSWORD</span><span class="stat-icon warning">{{ icon('key', 18) }}</span></div><div class="stat-number">{{ analysis.missing|length }}</div><small>Incomplete entries</small></div>
+  <div class="stat-card static"><div class="stat-top"><span class="stat-label">OLD</span><span class="stat-icon warning">{{ icon('clock', 18) }}</span></div><div class="stat-number">{{ analysis.old|length }}</div><small>Unchanged for 180+ days</small></div>
+</div>
+
+<section>
+  <div class="section-heading"><div><h2>Recommendations</h2><p class="muted">Suggested next steps</p></div></div>
+  <ul class="reco-list">
+    {% for level, title, text in analysis.recommendations %}
+    <li class="reco reco-{{ level }}"><span class="reco-icon">{{ icon({'danger':'alert','warning':'alert','success':'check-circle','info':'info'}[level], 18) }}</span><div><b>{{ title }}</b><p>{{ text }}</p></div></li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% macro issue_list(title, entries, note) %}
+{% if entries %}
+<section>
+  <div class="section-heading"><div><h2>{{ title }}</h2><p class="muted">{{ note }}</p></div><span class="count-pill">{{ entries|length }}</span></div>
+  <div class="vault-list">
+    {% for e in entries %}
+    <div class="vault-row simple">
+      <div class="item-icon">{{ e.item.title[0]|upper }}</div>
+      <div class="item-main"><b>{{ e.item.title }}</b><small>{{ e.item.username or 'No username added' }}</small></div>
+      {% if e.password %}<span class="strength-text lvl-{{ e.strength.score }}">{{ e.strength.label }}</span>{% endif %}
+      <a class="btn btn-outline btn-sm" href="{{ url_for('vault.edit', item_id=e.item.id, back='security') }}">{{ icon('edit', 14) }} Fix</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endmacro %}
+
+{{ issue_list('Weak passwords', analysis.weak, 'Easy-to-guess patterns, such as a name plus numbers. Replace them with long, random passwords.') }}
+
+{% if analysis.reused_groups %}
+<section>
+  <div class="section-heading"><div><h2>Reused passwords</h2><p class="muted">Each group below shares one password.</p></div><span class="count-pill">{{ analysis.reused_groups|length }}</span></div>
+  <div class="reuse-grid">
+    {% for group in analysis.reused_groups %}
+    <div class="card reuse-card">
+      <div class="reuse-head">{{ icon('repeat', 16) }} <b>{{ group|length }} accounts share a password</b></div>
+      <ul>{% for e in group %}<li><span>{{ e.item.title }}</span><a class="text-link" href="{{ url_for('vault.edit', item_id=e.item.id, back='security') }}">Change</a></li>{% endfor %}</ul>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{{ issue_list('Entries without a password', analysis.missing, 'Add the password or delete the entry.') }}
+{{ issue_list('Old passwords', analysis.old, 'Not changed in over 180 days.') }}
+{% endif %}
+{% endblock %}

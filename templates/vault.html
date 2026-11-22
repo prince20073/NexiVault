@@ -1,0 +1,32 @@
+{% extends "base.html" %}{% from "_macros.html" import icon, vault_row, page_head, empty_state with context %}
+{% block title %}My vault{% endblock %}
+{% block content %}
+{% call page_head('YOUR COLLECTION', 'My vault', 'All your saved logins, together in one place.') %}
+  <a class="btn btn-primary" href="{{ url_for('vault.add') }}">{{ icon('plus', 17) }} Add password</a>
+{% endcall %}
+
+<form class="toolbar" method="get" role="search">
+  <label class="search-box">{{ icon('search', 17) }}<input type="search" name="q" value="{{ search }}" placeholder="Search name, username or website…" aria-label="Search vault" maxlength="100"></label>
+  <select name="category" aria-label="Filter by category" data-autosubmit>
+    <option value="">All categories</option>
+    {% for c in categories %}<option value="{{ c }}" {{ 'selected' if category == c }}>{{ c }}</option>{% endfor %}
+  </select>
+  <select name="sort" aria-label="Sort" data-autosubmit>
+    <option value="updated" {{ 'selected' if sort == 'updated' }}>Recently updated</option>
+    <option value="created" {{ 'selected' if sort == 'created' }}>Recently added</option>
+    <option value="name" {{ 'selected' if sort == 'name' }}>Name (A–Z)</option>
+  </select>
+  <label class="chip-check"><input type="checkbox" name="favorites" value="1" {{ 'checked' if only_favorites }} data-autosubmit>{{ icon('star', 14) }} Favorites</label>
+  <button class="btn btn-dark btn-sm" type="submit">Search</button>
+  {% if filtered %}<a class="text-link" href="{{ url_for('vault.index') }}">Clear</a>{% endif %}
+</form>
+
+{% if entries %}
+<p class="result-count">{{ entries|length }} {{ 'password' if entries|length == 1 else 'passwords' }}{{ ' found' if filtered }}</p>
+<div class="vault-list">{% for e in entries %}{{ vault_row(e) }}{% endfor %}</div>
+{% elif filtered %}
+{% call empty_state('search', 'No matching passwords', 'Try a different search term or clear the filters.') %}<a class="btn btn-outline" href="{{ url_for('vault.index') }}">Clear filters</a>{% endcall %}
+{% else %}
+{% call empty_state('key', 'Nothing here yet', 'Add an account to start building your encrypted vault.') %}<a class="btn btn-primary" href="{{ url_for('vault.add') }}">{{ icon('plus', 17) }} Add password</a>{% endcall %}
+{% endif %}
+{% endblock %}

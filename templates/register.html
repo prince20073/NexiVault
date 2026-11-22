@@ -1,0 +1,19 @@
+{% extends "auth.html" %}{% from "_macros.html" import icon, csrf, eye_toggle, strength_bar with context %}
+{% block title %}Create account{% endblock %}
+{% block auth_heading %}Create your vault{% endblock %}
+{% block auth_subtitle %}Start organising your digital life securely.{% endblock %}
+{% block auth_form %}
+<form method="post" class="form-stack">
+  {{ csrf() }}
+  <div class="field"><label for="email">Email address</label>
+    <input id="email" type="email" name="email" value="{{ email }}" placeholder="you@example.com" required maxlength="254" autocomplete="email" autofocus></div>
+  <div class="field"><label for="master">Master password</label>
+    <div class="input-group"><input id="master" type="password" name="master_password" placeholder="At least 12 characters" required minlength="12" maxlength="256" autocomplete="new-password" data-strength-input="reg-strength">{{ eye_toggle('master') }}</div>
+    {{ strength_bar(none, 'reg-strength') }}
+    <small class="hint">There is no password recovery: if you forget it, your vault cannot be decrypted.</small></div>
+  <div class="field"><label for="confirm">Confirm master password</label>
+    <input id="confirm" type="password" name="confirm_password" placeholder="Enter it again" required minlength="12" maxlength="256" autocomplete="new-password"></div>
+  <button class="btn btn-primary full" type="submit"><span class="btn-label">Create secure account</span> {{ icon('arrow-right', 17) }}</button>
+</form>
+{% endblock %}
+{% block auth_bottom %}Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>{% endblock %}

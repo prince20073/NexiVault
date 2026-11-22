@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% from "_macros.html" import icon, csrf, page_head with context %}
+{% block title %}{{ 'Edit note' if note else 'New note' }}{% endblock %}
+{% block content %}
+{% call page_head('PRIVATE TEXT', 'Edit note' if note else 'New secure note', 'The note body is encrypted before it is saved.') %}
+  <a class="btn btn-ghost" href="{{ url_for('notes.index') }}">{{ icon('arrow-left', 17) }} Back to notes</a>
+{% endcall %}
+<div class="form-layout">
+  <form method="post" class="card form-card" autocomplete="off">
+    {{ csrf() }}
+    <div class="form-grid">
+      <div class="field full-field"><label for="title">Title <span class="req">*</span></label>
+        <input id="title" name="title" value="{{ form.title }}" placeholder="e.g. Wi-Fi codes, Recovery keys" required maxlength="100" autofocus></div>
+      <div class="field full-field"><label for="content">Note</label>
+        <textarea id="content" name="content" rows="12" maxlength="10000" placeholder="Write your private note here…">{{ form.content }}</textarea>
+        <small class="hint">Up to 10,000 characters.</small></div>
+      <div class="field full-field"><label class="check-row"><input type="checkbox" name="is_favorite" {{ 'checked' if form.is_favorite }}> <span>Add to favorites</span></label></div>
+    </div>
+    <div class="form-actions">
+      <a class="btn btn-ghost" href="{{ url_for('notes.index') }}">Cancel</a>
+      <button class="btn btn-primary" type="submit"><span class="btn-label">{{ 'Save changes' if note else 'Save note' }}</span></button>
+    </div>
+  </form>
+  {% if note %}
+  <aside class="form-aside">
+    <div class="card danger-card">
+      <h3>Delete this note</h3>
+      <p class="muted">This permanently removes the note and its encrypted content.</p>
+      <form method="post" action="{{ url_for('notes.delete', note_id=note.id) }}" data-confirm="“{{ note.title }}” will be permanently deleted. This cannot be undone." data-confirm-title="Delete this note?">{{ csrf() }}
+        <button class="btn btn-danger-outline full" type="submit">{{ icon('trash', 16) }} Delete note</button>
+      </form>
+    </div>
+  </aside>
+  {% endif %}
+</div>
+{% endblock %}

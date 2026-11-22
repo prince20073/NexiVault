@@ -1,0 +1,143 @@
+{# Shared template pieces: icons, brand mark, CSRF field, strength meter, vault row, note card #}
+{% set ICONS = {
+ 'grid': '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>',
+ 'key': '<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2"/><path d="m17 6 3 3"/><path d="m14 9 2 2"/>',
+ 'star': '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+ 'note': '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+ 'refresh': '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
+ 'shield': '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+ 'shield-check': '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+ 'settings': '<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
+ 'logout': '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+ 'lock': '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+ 'unlock': '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+ 'eye': '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+ 'eye-off': '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>',
+ 'copy': '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+ 'edit': '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+ 'trash': '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+ 'plus': '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+ 'search': '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+ 'check': '<polyline points="20 6 9 17 4 12"/>',
+ 'x': '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+ 'alert': '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+ 'info': '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+ 'external': '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',
+ 'menu': '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>',
+ 'arrow-right': '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+ 'arrow-left': '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+ 'user': '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+ 'clock': '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+ 'repeat': '<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+ 'check-circle': '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+ 'zap': '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+ 'database': '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
+ 'devices': '<rect x="2" y="4" width="14" height="11" rx="2"/><rect x="14" y="9" width="8" height="12" rx="2"/>',
+ 'globe': '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
+} %}
+{% macro icon(name, size=18, cls='') -%}
+<svg class="icon {{ cls }}" width="{{ size }}" height="{{ size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">{{ ICONS[name]|safe }}</svg>
+{%- endmacro %}
+
+{% macro brand_mark(size=34) -%}
+<svg class="brand-svg" width="{{ size }}" height="{{ size }}" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="nvg{{ size }}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b83f7"/><stop offset="1" stop-color="#5a51d6"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#nvg{{ size }})"/><path d="M12 28V12l16 16V12" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+{%- endmacro %}
+
+{% macro brand(href, light=false) -%}
+<a class="brand {{ 'brand-dark' if light }}" href="{{ href }}">{{ brand_mark() }}<span>nexi<span class="brand-light">vault</span></span></a>
+{%- endmacro %}
+
+{% macro csrf() -%}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{%- endmacro %}
+
+{% macro eye_toggle(target) -%}
+<button type="button" class="icon-btn" data-toggle="{{ target }}" aria-label="Show or hide password" title="Show / hide">
+  <span class="ico-show">{{ icon('eye', 17) }}</span><span class="ico-hide">{{ icon('eye-off', 17) }}</span>
+</button>
+{%- endmacro %}
+
+{# Four-segment strength bar. score: 0-4, or None for an empty bar. #}
+{% macro strength_bar(strength, id='') -%}
+<div class="meter lvl-{{ strength.score if strength else 'none' }}" {% if id %}id="{{ id }}"{% endif %}>
+  <div class="meter-bars"><i></i><i></i><i></i><i></i></div>
+  <span class="meter-label">{{ strength.label if strength else 'Enter a password' }}</span>
+</div>
+{%- endmacro %}
+
+{% macro issue_badges(issues) -%}
+{% for i in issues %}<span class="badge badge-{{ 'danger' if i in ('weak','reused') else 'warning' }}">{{ {'weak':'Weak','reused':'Reused','missing':'No password','old':'Old'}[i] }}</span>{% endfor %}
+{%- endmacro %}
+
+{# One saved login. Used on the vault, favorites and dashboard pages. #}
+{% macro vault_row(e, compact=false, when=none) -%}
+{% set item = e.item %}
+<div class="vault-row">
+  <div class="item-icon">{{ item.title[0]|upper }}</div>
+  <div class="item-main">
+    <a class="item-title" href="{{ url_for('vault.edit', item_id=item.id) }}">{{ item.title }}</a>
+    <small>{{ item.username or 'No username added' }}{% if item.website %} · {{ item.website|replace('https://','')|replace('http://','')|truncate(30, True, '…') }}{% endif %}</small>
+  </div>
+  {% if when %}<span class="row-when">{{ when }}</span>{% else %}<span class="category-tag">{{ item.category }}</span>{% endif %}
+  <div class="row-strength">
+    {% if e.password %}<div class="meter mini lvl-{{ e.strength.score }}" title="{{ e.strength.label }}"><div class="meter-bars"><i></i><i></i><i></i><i></i></div></div>{% endif %}
+    {{ issue_badges(e.issues) if e.issues is defined }}
+  </div>
+  <span class="secret" data-secret>••••••••••</span>
+  <div class="row-actions">
+    <form method="post" action="{{ url_for('vault.favorite', item_id=item.id) }}">{{ csrf() }}
+      <button class="icon-btn {{ 'is-fav' if item.is_favorite }}" title="{{ 'Remove from favorites' if item.is_favorite else 'Add to favorites' }}" aria-label="Toggle favorite">{{ icon('star', 17) }}</button>
+    </form>
+    {% if not compact %}
+    <button type="button" class="icon-btn" data-reveal-url="{{ url_for('vault.reveal', item_id=item.id) }}" title="Show password" aria-label="Show password" {{ 'disabled' if not e.password }}>
+      <span class="ico-show">{{ icon('eye', 17) }}</span><span class="ico-hide">{{ icon('eye-off', 17) }}</span>
+    </button>
+    <button type="button" class="icon-btn" data-copy-url="{{ url_for('vault.reveal', item_id=item.id) }}" title="Copy password" aria-label="Copy password" {{ 'disabled' if not e.password }}>{{ icon('copy', 17) }}</button>
+    {% endif %}
+    {% if not compact and item.website %}<a class="icon-btn" href="{{ item.website }}" target="_blank" rel="noopener noreferrer" title="Open website" aria-label="Open website">{{ icon('external', 17) }}</a>{% endif %}
+    <a class="icon-btn" href="{{ url_for('vault.edit', item_id=item.id) }}" title="Edit" aria-label="Edit">{{ icon('edit', 17) }}</a>
+    {% if not compact %}
+    <form method="post" action="{{ url_for('vault.delete', item_id=item.id) }}" data-confirm="“{{ item.title }}” will be permanently deleted. This cannot be undone." data-confirm-title="Delete this password?">{{ csrf() }}
+      <button class="icon-btn danger" title="Delete" aria-label="Delete">{{ icon('trash', 17) }}</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro note_card(note, content) -%}
+<article class="note-card">
+  <div class="note-head">
+    <a class="item-title" href="{{ url_for('notes.edit', note_id=note.id) }}">{{ note.title }}</a>
+    <form method="post" action="{{ url_for('notes.favorite', note_id=note.id) }}">{{ csrf() }}
+      <button class="icon-btn {{ 'is-fav' if note.is_favorite }}" title="{{ 'Remove from favorites' if note.is_favorite else 'Add to favorites' }}" aria-label="Toggle favorite">{{ icon('star', 17) }}</button>
+    </form>
+  </div>
+  <p class="note-snippet">{{ content|truncate(150, True, '…') if content else 'Empty note' }}</p>
+  <div class="note-foot">
+    <small>{{ icon('clock', 13) }} Updated {{ note.updated_at|timeago }}</small>
+    <div class="row-actions">
+      <a class="icon-btn" href="{{ url_for('notes.edit', note_id=note.id) }}" title="Edit" aria-label="Edit note">{{ icon('edit', 17) }}</a>
+      <form method="post" action="{{ url_for('notes.delete', note_id=note.id) }}" data-confirm="“{{ note.title }}” will be permanently deleted. This cannot be undone." data-confirm-title="Delete this note?">{{ csrf() }}
+        <button class="icon-btn danger" title="Delete" aria-label="Delete note">{{ icon('trash', 17) }}</button>
+      </form>
+    </div>
+  </div>
+</article>
+{%- endmacro %}
+
+{% macro empty_state(icon_name, title, text) -%}
+<div class="empty-state"><div class="empty-icon">{{ icon(icon_name, 24) }}</div><h3>{{ title }}</h3><p>{{ text }}</p>{{ caller() if caller }}</div>
+{%- endmacro %}
+
+{% macro page_head(eyebrow, title, sub='') -%}
+<div class="page-heading">
+  <div><div class="eyebrow">{{ eyebrow }}</div><h1>{{ title }}</h1>{% if sub %}<p class="muted">{{ sub }}</p>{% endif %}</div>
+  {% if caller %}<div class="page-actions">{{ caller() }}</div>{% endif %}
+</div>
+{%- endmacro %}
+
+{% macro score_ring(score, grade) -%}
+<div class="score-ring {{ 'grade-good' if score is not none and score >= 70 else ('grade-mid' if score is not none and score >= 40 else 'grade-bad') }}">
+  <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.9155"/><circle class="ring-fg" cx="18" cy="18" r="15.9155" stroke-dasharray="{{ score or 0 }} 100"/></svg>
+  <div class="ring-text"><strong>{{ score if score is not none else '–' }}</strong><small>{{ grade }}</small></div>
+</div>
+{%- endmacro %}

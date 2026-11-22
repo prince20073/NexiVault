@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% from "_macros.html" import icon, note_card, page_head, empty_state with context %}
+{% block title %}Secure notes{% endblock %}
+{% block content %}
+{% call page_head('PRIVATE TEXT', 'Secure notes', 'Notes are encrypted with the same key as your passwords.') %}
+  <a class="btn btn-primary" href="{{ url_for('notes.add') }}">{{ icon('plus', 17) }} New note</a>
+{% endcall %}
+<form class="toolbar" method="get" role="search">
+  <label class="search-box">{{ icon('search', 17) }}<input type="search" name="q" value="{{ search }}" placeholder="Search note titles and content…" aria-label="Search notes" maxlength="100"></label>
+  <button class="btn btn-dark btn-sm" type="submit">Search</button>
+  {% if search %}<a class="text-link" href="{{ url_for('notes.index') }}">Clear</a>{% endif %}
+</form>
+{% if notes %}
+<div class="notes-grid">{% for note, content in notes %}{{ note_card(note, content) }}{% endfor %}</div>
+{% elif search %}
+{% call empty_state('search', 'No matching notes', 'Try a different search term.') %}<a class="btn btn-outline" href="{{ url_for('notes.index') }}">Clear search</a>{% endcall %}
+{% else %}
+{% call empty_state('note', 'No secure notes yet', 'Store Wi-Fi codes, recovery keys or anything private.') %}<a class="btn btn-primary" href="{{ url_for('notes.add') }}">{{ icon('plus', 17) }} Create your first note</a>{% endcall %}
+{% endif %}
+{% endblock %}

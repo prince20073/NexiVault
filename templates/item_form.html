@@ -1,0 +1,59 @@
+{% extends "base.html" %}{% from "_macros.html" import icon, csrf, eye_toggle, strength_bar, page_head with context %}
+{% block title %}{{ 'Edit password' if item else 'Add password' }}{% endblock %}
+{% block content %}
+{% call page_head('SECURE CREDENTIALS', 'Edit password' if item else 'Add a password', 'Your password and notes are encrypted before they are saved.') %}
+  <a class="btn btn-ghost" href="{{ url_for('vault.index') }}">{{ icon('arrow-left', 17) }} Back to vault</a>
+{% endcall %}
+
+<div class="form-layout">
+  <form method="post" class="card form-card" autocomplete="off">
+    {{ csrf() }}
+    <div class="form-grid">
+      <div class="field full-field"><label for="title">Account name <span class="req">*</span></label>
+        <input id="title" name="title" value="{{ form.title }}" placeholder="e.g. Google, Instagram, College portal" required maxlength="100" autofocus></div>
+      <div class="field"><label for="username">Username / email</label>
+        <input id="username" name="username" value="{{ form.username }}" placeholder="name@example.com" maxlength="254" autocomplete="off"></div>
+      <div class="field"><label for="website">Website URL</label>
+        <input id="website" name="website" value="{{ form.website }}" placeholder="https://example.com" maxlength="500" inputmode="url"></div>
+      <div class="field full-field"><label for="vault-password">Password</label>
+        <div class="input-group">
+          <input id="vault-password" name="password" type="password" value="{{ form.password }}" placeholder="Enter or generate a password" maxlength="512" autocomplete="new-password" data-strength-input="item-strength">
+          {{ eye_toggle('vault-password') }}
+          <button type="button" class="icon-btn" data-generate-into="vault-password" title="Generate a strong password" aria-label="Generate a strong password">{{ icon('refresh', 17) }}</button>
+        </div>
+        {{ strength_bar(none, 'item-strength') }}
+        <small class="hint">Leave blank only if you plan to add it later. The Security centre flags entries without a password.</small></div>
+      <div class="field full-field"><label for="category">Category</label>
+        <select id="category" name="category">{% for c in categories %}<option value="{{ c }}" {{ 'selected' if form.category == c }}>{{ c }}</option>{% endfor %}</select></div>
+      <div class="field full-field"><label for="notes">Private notes</label>
+        <textarea id="notes" name="notes" rows="4" maxlength="2000" placeholder="Optional - encrypted together with your password">{{ form.notes }}</textarea></div>
+      <div class="field full-field"><label class="check-row"><input type="checkbox" name="is_favorite" {{ 'checked' if form.is_favorite }}> <span>Add to favorites</span></label></div>
+    </div>
+    <div class="form-actions">
+      <a class="btn btn-ghost" href="{{ url_for('tools.security_centre') if request.args.get('back') == 'security' else url_for('vault.index') }}">Cancel</a>
+      <button class="btn btn-primary" type="submit"><span class="btn-label">{{ 'Save changes' if item else 'Save to vault' }}</span></button>
+    </div>
+  </form>
+
+  <aside class="form-aside">
+    <div class="card tip-card">
+      <div class="tip-icon">{{ icon('shield-check', 20) }}</div>
+      <h3>Good password habits</h3>
+      <ul class="tick-list">
+        <li>Use a unique password for every account.</li>
+        <li>Longer is stronger - aim for 16+ characters.</li>
+        <li>Use the <b>generate</b> button for random passwords.</li>
+      </ul>
+    </div>
+    {% if item %}
+    <div class="card danger-card">
+      <h3>Delete this entry</h3>
+      <p class="muted">This permanently removes the saved login and its encrypted data.</p>
+      <form method="post" action="{{ url_for('vault.delete', item_id=item.id) }}" data-confirm="“{{ item.title }}” will be permanently deleted. This cannot be undone." data-confirm-title="Delete this password?">{{ csrf() }}
+        <button class="btn btn-danger-outline full" type="submit">{{ icon('trash', 16) }} Delete password</button>
+      </form>
+    </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

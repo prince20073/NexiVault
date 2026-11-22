@@ -1,0 +1,55 @@
+{% extends "base.html" %}{% from "_macros.html" import icon, csrf, eye_toggle, strength_bar, page_head with context %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+{{ page_head('ACCOUNT', 'Profile & settings', 'Manage your account and master password.') }}
+<div class="settings-grid">
+  <div class="settings-main">
+    <section class="card">
+      <h3 class="card-title">Profile</h3>
+      <div class="profile-head"><div class="avatar large">{{ current_user.initial }}</div><div><b>{{ current_user.name }}</b><small class="block muted">{{ current_user.email }}</small></div></div>
+      <form method="post" action="{{ url_for('account.update_profile') }}" class="form-stack">
+        {{ csrf() }}
+        <div class="field"><label for="display_name">Display name</label>
+          <input id="display_name" name="display_name" value="{{ current_user.display_name }}" maxlength="60" placeholder="How should we greet you?"></div>
+        <div class="field"><label for="email">Email address</label><input id="email" value="{{ current_user.email }}" disabled></div>
+        <div class="form-actions tight"><button class="btn btn-primary" type="submit"><span class="btn-label">Save profile</span></button></div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h3 class="card-title">Change master password</h3>
+      <p class="muted card-sub">All of your saved passwords and notes will be re-encrypted with the new password.</p>
+      <form method="post" action="{{ url_for('account.change_password') }}" class="form-stack" autocomplete="off">
+        {{ csrf() }}
+        <div class="field"><label for="current_password">Current master password</label>
+          <div class="input-group"><input id="current_password" name="current_password" type="password" required autocomplete="current-password">{{ eye_toggle('current_password') }}</div></div>
+        <div class="field"><label for="new_password">New master password</label>
+          <div class="input-group"><input id="new_password" name="new_password" type="password" required minlength="12" maxlength="256" autocomplete="new-password" data-strength-input="new-strength">{{ eye_toggle('new_password') }}</div>
+          {{ strength_bar(none, 'new-strength') }}</div>
+        <div class="field"><label for="confirm_password">Confirm new master password</label>
+          <input id="confirm_password" name="confirm_password" type="password" required minlength="12" maxlength="256" autocomplete="new-password"></div>
+        <div class="form-actions tight"><button class="btn btn-primary" type="submit"><span class="btn-label">Change password</span></button></div>
+      </form>
+    </section>
+  </div>
+
+  <aside class="settings-side">
+    <section class="card">
+      <h3 class="card-title">Your vault</h3>
+      <ul class="info-list">
+        <li><span>Saved passwords</span><b>{{ counts.passwords }}</b></li>
+        <li><span>Secure notes</span><b>{{ counts.notes }}</b></li>
+        <li><span>Member since</span><b>{{ current_user.created_at|longdate }}</b></li>
+        <li><span>Last sign-in</span><b>{{ current_user.last_login_at|timeago }}</b></li>
+        <li><span>Auto-lock after</span><b>{{ auto_lock_minutes }} min idle</b></li>
+      </ul>
+    </section>
+    <section class="card">
+      <h3 class="card-title">Session</h3>
+      <p class="muted card-sub">Lock your vault to keep your account signed in but require the master password to view data.</p>
+      <form method="post" action="{{ url_for('auth.lock') }}">{{ csrf() }}<button class="btn btn-outline full" type="submit">{{ icon('lock', 16) }} Lock vault now</button></form>
+      <form method="post" action="{{ url_for('auth.logout') }}" class="spaced-top">{{ csrf() }}<button class="btn btn-danger-outline full" type="submit">{{ icon('logout', 16) }} Sign out</button></form>
+    </section>
+  </aside>
+</div>
+{% endblock %}

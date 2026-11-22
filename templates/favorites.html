@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% from "_macros.html" import icon, vault_row, note_card, page_head, empty_state with context %}
+{% block title %}Favorites{% endblock %}
+{% block content %}
+{{ page_head('QUICK ACCESS', 'Favorites', 'The passwords and notes you use most.') }}
+{% if entries or notes %}
+  {% if entries %}
+  <div class="section-heading"><div><h2>Passwords</h2></div><span class="muted">{{ entries|length }}</span></div>
+  <div class="vault-list">{% for e in entries %}{{ vault_row(e) }}{% endfor %}</div>
+  {% endif %}
+  {% if notes %}
+  <div class="section-heading spaced"><div><h2>Secure notes</h2></div><span class="muted">{{ notes|length }}</span></div>
+  <div class="notes-grid">{% for note, content in notes %}{{ note_card(note, content) }}{% endfor %}</div>
+  {% endif %}
+{% else %}
+{% call empty_state('star', 'No favorites yet', 'Tap the star on any password or note to pin it here.') %}<a class="btn btn-outline" href="{{ url_for('vault.index') }}">Browse my vault</a>{% endcall %}
+{% endif %}
+{% endblock %}

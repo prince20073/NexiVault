@@ -1,0 +1,55 @@
+{% extends "base.html" %}{% from "_macros.html" import icon with context %}
+{% block title %}Your passwords, safely organised{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow pill-eyebrow">{{ icon('shield-check', 14) }} ENCRYPTED PASSWORD MANAGER</div>
+    <h1>One vault for every <span>password</span> you own.</h1>
+    <p class="hero-sub">NexiVault keeps your logins and private notes encrypted, helps you create strong passwords, and shows you which accounts need attention.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('auth.register') }}">Create free account {{ icon('arrow-right', 18) }}</a>
+      <a class="btn btn-ghost btn-lg" href="{{ url_for('auth.login') }}">Sign in</a>
+    </div>
+    <div class="hero-trust"><span>{{ icon('check', 14) }} Fernet encryption</span><span>{{ icon('check', 14) }} Scrypt key derivation</span><span>{{ icon('check', 14) }} Runs on your computer</span></div>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <div class="visual-glow"></div>
+    <div class="vault-preview">
+      <div class="preview-top"><span>NEXIVAULT</span><span class="preview-dots">● ● ●</span></div>
+      <div class="preview-heading"><div><small>SECURITY SCORE</small><h3>Your vault looks healthy</h3></div><div class="preview-shield">{{ icon('shield-check', 26) }}</div></div>
+      <div class="preview-stat"><div><small>PROTECTED ACCOUNTS</small><strong>24</strong></div><span class="preview-lock">{{ icon('lock', 22) }}</span></div>
+      <div class="preview-row"><span class="site-icon purple">G</span><div><b>Google</b><small>demo@example.com</small></div><span class="masked-dots">••••••••</span></div>
+      <div class="preview-row"><span class="site-icon blue">C</span><div><b>College portal</b><small>student@college.edu</small></div><span class="masked-dots">••••••••</span></div>
+      <div class="preview-row"><span class="site-icon orange">S</span><div><b>Shopping</b><small>shopper@example.com</small></div><span class="masked-dots">••••••••</span></div>
+      <div class="preview-foot"><span class="status-dot"></span> Encryption active</div>
+    </div>
+  </div>
+</section>
+
+<section class="feature-section" id="features">
+  <div class="section-intro"><div class="eyebrow centered">EVERYTHING YOU NEED</div><h2>A complete toolkit for password hygiene</h2></div>
+  <div class="feature-grid">
+    <article class="feature-card"><div class="feature-icon">{{ icon('key', 22) }}</div><h3>Password vault</h3><p>Save logins with usernames, websites, categories and private notes. Search, filter and favorite in one click.</p></article>
+    <article class="feature-card"><div class="feature-icon">{{ icon('note', 22) }}</div><h3>Secure notes</h3><p>Keep Wi-Fi codes, recovery keys and other text safe. Note bodies are encrypted just like passwords.</p></article>
+    <article class="feature-card"><div class="feature-icon">{{ icon('refresh', 22) }}</div><h3>Password generator</h3><p>Create random passwords of any length with Python's cryptographically secure <code>secrets</code> module.</p></article>
+    <article class="feature-card"><div class="feature-icon">{{ icon('shield-check', 22) }}</div><h3>Security centre</h3><p>Spot weak, reused, old or missing passwords and get a clear security score with next steps.</p></article>
+    <article class="feature-card"><div class="feature-icon">{{ icon('lock', 22) }}</div><h3>Auto-lock</h3><p>Your vault locks itself after a period of inactivity, so an unattended screen stays private.</p></article>
+    <article class="feature-card"><div class="feature-icon">{{ icon('devices', 22) }}</div><h3>Works on any screen</h3><p>A responsive layout that feels at home on desktop, tablet and mobile browsers.</p></article>
+  </div>
+</section>
+
+<section class="steps-section">
+  <div class="section-intro"><div class="eyebrow centered">HOW IT WORKS</div><h2>Up and running in three steps</h2></div>
+  <div class="steps">
+    <div class="step"><span class="step-num">1</span><h3>Create your account</h3><p>Choose a strong master password. It protects everything and is never stored in plain text.</p></div>
+    <div class="step"><span class="step-num">2</span><h3>Add your passwords</h3><p>Save logins and notes. Each secret is encrypted with a key derived from your master password.</p></div>
+    <div class="step"><span class="step-num">3</span><h3>Improve your security</h3><p>Use the generator and Security centre to replace weak and reused passwords.</p></div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div><h2>Ready to take control of your passwords?</h2><p>Create an account in under a minute.</p></div>
+  <a class="btn btn-light btn-lg" href="{{ url_for('auth.register') }}">Get started {{ icon('arrow-right', 18) }}</a>
+</section>
+<p class="disclaimer">NexiVault is an educational project, not a production-ready or independently audited password manager. Please store only test data.</p>
+{% endblock %}

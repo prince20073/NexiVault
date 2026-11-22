@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% from "_macros.html" import icon, csrf, strength_bar, page_head with context %}
+{% block title %}Password generator{% endblock %}
+{% block content %}
+{% call page_head('SECURITY TOOL', 'Password generator', 'Create a unique, random password for your accounts.') %}
+  <span class="pill">{{ icon('zap', 14) }} Secure random</span>
+{% endcall %}
+<div class="generator-layout">
+  <section class="card generator-card">
+    <div class="card-kicker">YOUR NEW PASSWORD</div>
+    <div class="generated-output" id="generated-wrap">
+      <input id="generated-password" readonly value="{{ generated }}" placeholder="Your password will appear here" aria-label="Generated password" spellcheck="false">
+      <button type="button" class="copy-button" data-copy-target="generated-password">{{ icon('copy', 15) }} <span>Copy</span></button>
+    </div>
+    {{ strength_bar(strength, 'gen-strength') }}
+    <div class="generated-hint">Generated with a cryptographically secure random generator.</div>
+
+    <form method="post" class="generator-form" id="generator-form" data-generator-api="{{ url_for('tools.generate_api') }}">
+      {{ csrf() }}
+      <div class="length-heading"><label for="length">Password length</label><strong id="length-value">{{ options.length }}</strong></div>
+      <input id="length" name="length" type="range" min="8" max="64" value="{{ options.length }}" data-range-output="length-value">
+      <div class="options-grid">
+        <label class="option-check"><input type="checkbox" name="upper" {{ 'checked' if options.upper }}><span>Uppercase letters</span><small>A–Z</small></label>
+        <label class="option-check"><input type="checkbox" name="lower" {{ 'checked' if options.lower }}><span>Lowercase letters</span><small>a–z</small></label>
+        <label class="option-check"><input type="checkbox" name="digits" {{ 'checked' if options.digits }}><span>Numbers</span><small>0–9</small></label>
+        <label class="option-check"><input type="checkbox" name="symbols" {{ 'checked' if options.symbols }}><span>Symbols</span><small>! @ # $</small></label>
+      </div>
+      <button class="btn btn-primary full btn-lg" type="submit">{{ icon('refresh', 18) }} <span class="btn-label">Generate password</span></button>
+    </form>
+  </section>
+  <aside class="generator-aside">
+    <div class="aside-icon">{{ icon('shield', 22) }}</div>
+    <h3>Make every password unique.</h3>
+    <p>Using a different, randomly generated password for each account helps limit the impact if one account is compromised.</p>
+    <div class="aside-rule"></div>
+    <div class="aside-point">{{ icon('check', 16) }}<div><b>Generated on the server</b><small>Created by Python's secure <code>secrets</code> module.</small></div></div>
+    <div class="aside-point">{{ icon('check', 16) }}<div><b>Customisable</b><small>Choose length and character types.</small></div></div>
+    <div class="aside-point">{{ icon('check', 16) }}<div><b>Never saved</b><small>Passwords you generate here aren't stored anywhere.</small></div></div>
+  </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "auth.html" %}{% from "_macros.html" import icon, csrf, eye_toggle with context %}
+{% block title %}Sign in{% endblock %}
+{% block auth_heading %}Welcome back{% endblock %}
+{% block auth_subtitle %}Sign in to access your personal vault.{% endblock %}
+{% block auth_form %}
+<form method="post" class="form-stack">
+  {{ csrf() }}
+  <div class="field"><label for="email">Email address</label>
+    <input id="email" type="email" name="email" value="{{ email }}" placeholder="you@example.com" required maxlength="254" autocomplete="username" autofocus></div>
+  <div class="field"><label for="master">Master password</label>
+    <div class="input-group"><input id="master" type="password" name="master_password" placeholder="Your master password" required autocomplete="current-password">{{ eye_toggle('master') }}</div></div>
+  <button class="btn btn-primary full" type="submit"><span class="btn-label">Sign in</span> {{ icon('arrow-right', 17) }}</button>
+</form>
+{% endblock %}
+{% block auth_bottom %}New to NexiVault? <a href="{{ url_for('auth.register') }}">Create an account</a>{% endblock %}
